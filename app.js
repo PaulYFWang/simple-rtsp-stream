@@ -19,6 +19,12 @@ app.get("/", (req, res) => {
         res.write(`${boundary}\nContent-type: image/jpg\nContent-length: ${data.length}\n\n`) 
         res.write(data)
     })
+    req.on("close", () => {
+        console.log("Client quit connection")
+    })
+    req.on("end", () => {
+        console.log("Client closed connection")
+    })
 });
 
 app.listen(3001, () => {
