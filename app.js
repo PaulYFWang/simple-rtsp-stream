@@ -27,5 +27,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(3001, () => {
-    console.log("Listenting on 3001")
+    console.log("Listening on 3001")
 })
