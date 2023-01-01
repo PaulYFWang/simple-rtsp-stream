@@ -11,18 +11,28 @@ app.get("/", (req, res) => {
     })
     
     var stream_transform = (data) => {
-        res.write(`${boundary}\nContent-type: image/jpeg\nContent-length: ${data.length}\n\n`) 
+        res.write(`\nContent-type: image/jpeg\nContent-length: ${data.length}\n\n`) 
         res.write(data)
-        res.write(`\n`)
+        res.write(`${boundary}`)
     }
-    res.status(200)
+    //res.status(200)
     res.setHeader('Content-Type', `multipart/x-mixed-replace; boundary=${boundary}`)
     res.setHeader('Pragma', 'no-cache')
+    res.set("Connection", "close")
+    res.write(`${boundary}`)
     stream.on('data', stream_transform)
+    
     req.on("close", () => {
         stream.removeListener('data', stream_transform)
         stream.stop()
-        console.log("Client quit connection")
+        res.socket.destroy()
+        console.log("Client close connection")
+    })
+    req.on("end", () => {
+        stream.removeListener('data', stream_transform)
+        stream.stop()
+        res.socket.destroy()
+        console.log("Client end connection")
     })
 });
 
